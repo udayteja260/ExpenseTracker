@@ -1,10 +1,195 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <title>Expense Pie Chart</title>
+    <!-- Highcharts Library -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+
 </head>
 <body>
-$END$
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">ExTrack</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item mx-2">
+                    <a class="nav-link active" aria-current="page" href="home">Home</a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link active text-white" href="records">Records</a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link active text-white" href="dashboard">Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container text-center my-0.5">
+    <h1>Expense Distribution by Category</h1>
+<!--    <p>An expense tracker helps you record and analyze your expenditures, aiding in budgeting and financial planning.</p>-->
+</div>
+
+<div style="display: flex; justify-content: center; align-items: center; height: 85vh;">
+    <div id="expensePieChart" style="width: 80%; height: 600px; margin-bottom: 60px"></div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // This will be replaced by the actual data from your Spring MVC controller
+    const categoryData = /*[[${categoryData}]]*/ {};
+
+    // Define a color mapping for categories
+    const categoryColors = {
+        'Restaurant': '#ff0000', // Red
+        'Groceries': '#008000', // Green
+        'Transportation-Fuel': '#1E90FF', // Blue
+        'Education': '#FFA500', // Blue
+        // ... define more categories and their colors
+    };
+
+    // Function to get color for a category
+    function getColorForCategory(category) {
+        return categoryColors[category] || '#000000'; // Default to black if category not found
+    }
+
+    // Convert the category data to a format suitable for Highcharts
+    const chartData = Object.keys(categoryData).map(function (key) {
+        return {
+            name: key,
+            y: categoryData[key],
+            color: getColorForCategory(key) // Assign color based on category
+        };
+    });
+
+    // Highcharts configuration
+    Highcharts.chart('expensePieChart', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text:'',
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y} $</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                },
+                showInLegend: true
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            labelFormatter: function () {
+                return `${this.name}: ${this.y} $`; // Custom label with category and amount
+            }
+        },
+        credits: {
+            enabled: false
+            },
+        series: [{
+            name: 'Expenses',
+            colorByPoint: false,
+            data: chartData
+        }]
+    });
+    /*]]>*/
+</script>
+<!--<script th:inline="javascript">
+    /*<![CDATA[*/
+    // This will be replaced by the actual data from your Spring MVC controller
+    const categoryData = /*[[${categoryData}]]*/ {};
+
+    // Function to determine color based on amount
+    function getColor(amount) {
+        if (amount > 5000) return '#ff0000'; // Red for large amounts (> 500)
+        if (amount > 1000) return '#ffa500'; // Orange for medium amounts (200-500)
+        if (amount > 500) return '#1E90FF'; // Orange for medium amounts (200-500)
+        return '#008000'; // Green for smaller amounts (<= 200)
+    }
+
+    // Convert the category data to a format suitable for Highcharts
+    const chartData = Object.keys(categoryData).map(function (key) {
+        return {
+            name: key,
+            y: categoryData[key],
+            color: getColor(categoryData[key]) // Assign color based on amount
+        };
+    });
+
+    // Highcharts configuration
+    Highcharts.chart('expensePieChart', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'ExTrack Pie Chart'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y} (currency unit)</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                },
+                showInLegend: true
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            labelFormatter: function () {
+                return `${this.name}: ${this.y} $`; // Custom label with category and amount
+            }
+        },
+        credits: {
+            enabled: false
+        },
+        series: [{
+            name: 'Expenses',
+            colorByPoint: false,
+            data: chartData
+        }]
+    });
+    /*]]>*/
+</script>-->
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
