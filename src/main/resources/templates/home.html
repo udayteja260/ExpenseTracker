@@ -13,6 +13,17 @@
 
     <title>Expense Tracker</title>
 </head>
+<style>
+    .form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+  width: 50%;
+}
+</style>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -43,19 +54,28 @@
     <p>An expense tracker helps you record and analyze your expenditures, aiding in budgeting and financial planning.</p>
 </div>
 
-<div class="container">
+<div class="form-container">
+
     <form th:action="@{/api/ExpenseTracker/add}" th:object="${expense}" method="post">
-        <div class="mb-3">
-            <label for="category" class="form-label">Category:</label>
-            <input type="text" class="form-control" id="category" th:field="*{category}" />
-        </div>
-        <div class="mb-3">
-            <label for="amount" class="form-label">Amount:</label>
-            <input type="number" class="form-control" id="amount" th:field="*{amount}" />
-        </div>
         <div class="mb-3">
             <label for="date" class="form-label">Date</label>
             <input type="date" class="form-control" id="date" th:field="*{date}" />
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Category:</label>
+            <select class="form-control" id="category" th:field="*{category}">
+                <option value="">Select a Category</option>
+                <option value="Groceries">Merchandise & Supplies-Groceries</option>
+                <option value="Restaurant">Restaurant</option>
+                <option value="Transportation-Fuel">Transportation-Fuel</option>
+                <option value="Education">Education</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="amount" class="form-label">Amount:</label>
+            <input type="number" class="form-control" id="amount" th:field="*{amount}" />
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Description:</label>
