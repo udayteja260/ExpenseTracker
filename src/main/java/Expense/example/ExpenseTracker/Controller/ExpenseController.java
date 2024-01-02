@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/ExpenseTracker")
@@ -34,8 +35,11 @@ public class ExpenseController {
         return "redirect:/api/ExpenseTracker/records";
     }
 
-    @GetMapping("/getAll")
-    public List<Expenses> getAllExpenses() {
-        return expenseService.getAllExpenses();
+    @GetMapping("/dashboard")
+    public ModelAndView chartData() {
+        Map<String, Double> categoryTotals = expenseService.getGraph();
+        ModelAndView modelAndView = new ModelAndView("graph"); // "pieChart" is the name of your view (HTML/Thymeleaf/JSP)
+        modelAndView.addObject("categoryData", categoryTotals);
+        return modelAndView;
     }
 }

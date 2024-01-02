@@ -42,7 +42,7 @@ form {
                     <a class="nav-link active text-white" href="records">Records</a>
                 </li>
                 <li class="nav-item mx-2">
-                    <a class="nav-link active text-white" href="#">Dashboard</a>
+                    <a class="nav-link active text-white" href="dashboard">Dashboard</a>
                 </li>
             </ul>
         </div>
@@ -69,13 +69,12 @@ form {
                 <option value="Restaurant">Restaurant</option>
                 <option value="Transportation-Fuel">Transportation-Fuel</option>
                 <option value="Education">Education</option>
-                <!-- Add more options as needed -->
             </select>
         </div>
 
         <div class="mb-3">
             <label for="amount" class="form-label">Amount:</label>
-            <input type="number" class="form-control" id="amount" th:field="*{amount}" />
+            <input type="number" step="any" class="form-control" id="amount" th:field="*{amount}" />
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Description:</label>
